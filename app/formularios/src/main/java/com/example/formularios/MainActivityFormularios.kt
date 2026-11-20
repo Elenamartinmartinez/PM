@@ -40,13 +40,6 @@ class MainActivityFormularios : ComponentActivity() {
         }
     }
 } //Fin de la clase
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun PantallaRegistroPreview() {
-    PantallaRegistro()
-}
-
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 private fun PantallaRegistro() {
