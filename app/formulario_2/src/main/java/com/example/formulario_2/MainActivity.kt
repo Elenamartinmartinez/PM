@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -91,25 +92,26 @@ fun FormularioRegistro(modifier: Modifier = Modifier){
     val formularioValido = !nombreError && !emailError && !claveError && acepta
 
     //Fondo del formulario
-    Image(
-        painter = painterResource(id = R.drawable.fondo),
-        contentDescription = null,
-        modifier = Modifier.fillMaxSize(),
-        contentScale = ContentScale.Crop
-    )
-    //Datos para que el usuario pueda registrarse
-    Column(
-        modifier = modifier
-            .padding(16.dp)
-            .imePadding() //Para que el teclado no nos estorbe
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        Text( //Título del registro
-            "Registro",
-            style = MaterialTheme.typography.headlineMedium
+    Box(modifier = modifier.fillMaxSize()){
+        Image(
+            painter = painterResource(id = R.drawable.fondo),
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
         )
+        //Datos para que el usuario pueda registrarse
+        Column(
+            modifier = modifier
+                .padding(16.dp)
+                .imePadding() //Para que el teclado no nos estorbe
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text( //Título del registro
+                "Registro",
+                style = MaterialTheme.typography.headlineMedium
+            )
 //        TextField(
 //            value = nombre,
 //            onValueChange = {nombre = it},
@@ -117,88 +119,89 @@ fun FormularioRegistro(modifier: Modifier = Modifier){
 //            singleLine = true,
 //            modifier = Modifier.fillMaxWidth()
 //        )
-        OutlinedTextField(
-            value = nombre,
-            onValueChange = {nombre = it},
-            label = {Text("Nombre")},
-            singleLine = true,
-            isError = intentoEnvio && nombreError,
-            supportingText = {
-                if (intentoEnvio && nombreError) Text("Nombre obligatorio")
-            },
-            modifier = Modifier.fillMaxWidth()
-        )
-        OutlinedTextField(
-            value = apellido,
-            onValueChange = {apellido = it},
-            label = {Text("Apellido")},
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth()
-        )
-        OutlinedTextField(
-            value = email,
-            onValueChange = {email = it},
-            label = {Text("email")},
-            singleLine = true,
-            isError = intentoEnvio && emailError,
-            supportingText = {
-                if (intentoEnvio && emailError) Text("Formato de email no válido")
-            },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            modifier = Modifier.fillMaxWidth()
-        )
-        OutlinedTextField(
-            value = clave,
-            onValueChange = {clave = it},
-            label = {Text("Contraseña")},
-            singleLine = true,
-            isError = intentoEnvio && claveError,
-            supportingText = {
-                if (intentoEnvio && claveError) Text("Contraseña demasiado corta")
-            },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth()
-        )
-        OutlinedTextField(
-            value = edad,
-            onValueChange = {edad = it},
-            label = {Text("Edad")},
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            modifier = Modifier.fillMaxWidth()
-        )
-        OutlinedTextField(
-            value = numero,
-            onValueChange = {numero = it},
-            label = {Text("Número de teléfono")},
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-            modifier = Modifier.fillMaxWidth()
-        )
+            OutlinedTextField(
+                value = nombre,
+                onValueChange = {nombre = it},
+                label = {Text("Nombre")},
+                singleLine = true,
+                isError = intentoEnvio && nombreError,
+                supportingText = {
+                    if (intentoEnvio && nombreError) Text("Nombre obligatorio")
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
+            OutlinedTextField(
+                value = apellido,
+                onValueChange = {apellido = it},
+                label = {Text("Apellido")},
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
+            )
+            OutlinedTextField(
+                value = email,
+                onValueChange = {email = it},
+                label = {Text("email")},
+                singleLine = true,
+                isError = intentoEnvio && emailError,
+                supportingText = {
+                    if (intentoEnvio && emailError) Text("Formato de email no válido")
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                modifier = Modifier.fillMaxWidth()
+            )
+            OutlinedTextField(
+                value = clave,
+                onValueChange = {clave = it},
+                label = {Text("Contraseña")},
+                singleLine = true,
+                isError = intentoEnvio && claveError,
+                supportingText = {
+                    if (intentoEnvio && claveError) Text("Contraseña demasiado corta")
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                visualTransformation = PasswordVisualTransformation(),
+                modifier = Modifier.fillMaxWidth()
+            )
+            OutlinedTextField(
+                value = edad,
+                onValueChange = {edad = it},
+                label = {Text("Edad")},
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                modifier = Modifier.fillMaxWidth()
+            )
+            OutlinedTextField(
+                value = numero,
+                onValueChange = {numero = it},
+                label = {Text("Número de teléfono")},
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                modifier = Modifier.fillMaxWidth()
+            )
 
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Checkbox(checked = acepta, onCheckedChange = {acepta = it})
-            if (intentoEnvio && !acepta){
-                Text("Acepta los terminos")
-            }
-            Text("Acepto los terminos")
-        }
-
-        Text("Modalidad")
-        for (opcion in opciones){
             Row(verticalAlignment = Alignment.CenterVertically) {
-                RadioButton(selected = opcion==modalidad, onClick = {modalidad=opcion})
-                Text(opcion)//Pone de una vez los nombres de todas las opciones
+                Checkbox(checked = acepta, onCheckedChange = {acepta = it})
+                if (intentoEnvio && !acepta){
+                    Text("Acepta los terminos")
+                }
+                Text("Acepto los terminos")
             }
-        }
 
-        Button(onClick = {intentoEnvio = true}, modifier = Modifier.fillMaxWidth()) {
-            Text("Registrarse")
-        }
+            Text("Modalidad")
+            for (opcion in opciones){
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    RadioButton(selected = opcion==modalidad, onClick = {modalidad=opcion})
+                    Text(opcion)//Pone de una vez los nombres de todas las opciones
+                }
+            }
 
-        if (intentoEnvio && formularioValido) {
-            Text("Registro correcto")
+            Button(onClick = {intentoEnvio = true}, modifier = Modifier.fillMaxWidth()) {
+                Text("Registrarse")
+            }
+
+            if (intentoEnvio && formularioValido) {
+                Text("Registro correcto")
+            }
         }
     }
 }
