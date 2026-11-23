@@ -19,12 +19,16 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuAnchorType
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,9 +43,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.formulario_2.ui.theme.Mi_ProyectoTheme
-import org.intellij.lang.annotations.Pattern
 
-class MainActivityFormularios : ComponentActivity() {
+class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -68,6 +71,7 @@ private fun PantallaRegistro() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FormularioRegistro(modifier: Modifier = Modifier){
     //Botón
@@ -79,22 +83,30 @@ fun FormularioRegistro(modifier: Modifier = Modifier){
     var clave by remember {mutableStateOf("")}
     var edad by remember {mutableStateOf("")}
     var numero by remember {mutableStateOf("")}
+
     //Listas y checkboxs
     var acepta by remember {mutableStateOf(false)}
     val opciones = listOf("Presencial","On-line", "Mixta")
     var modalidad by remember {mutableStateOf(opciones[0])}
+
     //Errores para campos no válidos
     val nombreError = nombre.isEmpty()
     val emailError = !Patterns.EMAIL_ADDRESS.matcher(email.trim()).matches()
     val claveError = clave.length < 6
     var intentoEnvio by remember {mutableStateOf(false)}
+    val edadError = edad < 16.toString() || edad > 99.toString()
+
     //Formulario válido
-    val formularioValido = !nombreError && !emailError && !claveError && acepta
+    val formularioValido = !nombreError && !emailError && !claveError && !edadError  && acepta
+    //Desplegable
+    var curso by remember {mutableStateOf("")}
+    var expandido by remember {mutableStateOf(false)}
+    val cursos = listOf("1ºDAM","2ºDAM") //Lista desplegable
 
     //Fondo del formulario
     Box(modifier = modifier.fillMaxSize()){
         Image(
-            painter = painterResource(id = R.drawable.fondo),
+            painter = painterResource(id = R.drawable.fd),
             contentDescription = null,
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
@@ -126,7 +138,7 @@ fun FormularioRegistro(modifier: Modifier = Modifier){
                 singleLine = true,
                 isError = intentoEnvio && nombreError,
                 supportingText = {
-                    if (intentoEnvio && nombreError) Text("Nombre obligatorio")
+                    if (intentoEnvio && nombreError) Text("Nombre *") else Text("* Obligatorio")
                 },
                 modifier = Modifier.fillMaxWidth()
             )
@@ -144,7 +156,7 @@ fun FormularioRegistro(modifier: Modifier = Modifier){
                 singleLine = true,
                 isError = intentoEnvio && emailError,
                 supportingText = {
-                    if (intentoEnvio && emailError) Text("Formato de email no válido")
+                    if (intentoEnvio && emailError) Text("email *") else Text("* obligatorio")
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 modifier = Modifier.fillMaxWidth()
@@ -156,7 +168,7 @@ fun FormularioRegistro(modifier: Modifier = Modifier){
                 singleLine = true,
                 isError = intentoEnvio && claveError,
                 supportingText = {
-                    if (intentoEnvio && claveError) Text("Contraseña demasiado corta")
+                    if (intentoEnvio && claveError) Text("Contraseña *") else Text("* Obligatorio")
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 visualTransformation = PasswordVisualTransformation(),
@@ -167,6 +179,10 @@ fun FormularioRegistro(modifier: Modifier = Modifier){
                 onValueChange = {edad = it},
                 label = {Text("Edad")},
                 singleLine = true,
+                isError = intentoEnvio && edadError,
+                supportingText = {
+                    if (intentoEnvio && edadError) Text("$nombre, tu edad no es válida")
+                },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.fillMaxWidth()
             )
@@ -192,6 +208,36 @@ fun FormularioRegistro(modifier: Modifier = Modifier){
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     RadioButton(selected = opcion==modalidad, onClick = {modalidad=opcion})
                     Text(opcion)//Pone de una vez los nombres de todas las opciones
+                }
+            }
+
+            ExposedDropdownMenuBox(
+                expanded = expandido,
+                onExpandedChange = { expandido = it }
+            ) {
+                OutlinedTextField(
+                    value = curso,
+                    onValueChange = { },
+                    readOnly = true,
+                    label = { Text("Curso") },
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expandido) },
+                    modifier = Modifier
+                        .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
+                        .fillMaxWidth()
+                )
+                ExposedDropdownMenu(
+                    expanded = expandido,
+                    onDismissRequest = { expandido = false }
+                ) {
+                    for (opcion in cursos) {
+                        DropdownMenuItem(
+                            text = { Text(opcion) },
+                            onClick = {
+                                curso = opcion
+                                expandido = false
+                            }
+                        )
+                    }
                 }
             }
 
